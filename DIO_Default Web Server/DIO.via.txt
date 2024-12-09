@@ -80,7 +80,7 @@ define (WebApp%3A%3ADIO%2Egviweb dv(.VirtualInstrument (
         e(.JavaScriptStaticRefNum local58)
         de(dv(.Boolean false)dataItem_Clock)
         e(.Boolean local60)
-        ce(dv(.String 'ws://10.0.100.63:12345/')c61)
+        ce(dv(.String 'ws://10.0.100.130:12345/')c61)
         ce(dv(c(
             ce(c(
                 e(.Boolean Switch)
