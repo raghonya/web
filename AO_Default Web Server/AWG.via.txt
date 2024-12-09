@@ -78,7 +78,7 @@ define (Application%3A%3AAWG%2Egviweb dv(.VirtualInstrument (
         ce(dv(.String 'Init')c56)
         ce(dv(.ErrorCluster (false 0 '' ))c57)
         e(.JavaScriptStaticRefNum local58)
-        ce(dv(.String 'ws://10.0.100.130:9250/')c59)
+        ce(dv(.String 'ws://10.0.100.63:9250/')c59)
         ce(dv(c(
             ce(c(
                 e(.Boolean AI1)
