@@ -60,7 +60,7 @@ define (Application%3A%3AScope%2Egviweb dv(.VirtualInstrument (
         ce(dv(.String 'Init')c41)
         ce(dv(.ErrorCluster (false 0 '' ))c42)
         e(.JavaScriptStaticRefNum local43)
-        ce(dv(.String 'ws://10.0.100.63:7701/')c44)
+        ce(dv(.String 'ws://10.0.100.130:7701/')c44)
         ce(dv(c(
             ce(c(
                 e(.Boolean channel0)
