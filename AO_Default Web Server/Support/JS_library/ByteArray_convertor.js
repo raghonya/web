@@ -16,6 +16,7 @@ function convertToPythonByteArray(array1, array2) {
     return pythonByteArray;
 }
 
+
 function reverseByteArrayToDoubles(byteArrayString) {
     let dblArray = [];
     let bytePairs = byteArrayString.match(/\\x([a-f0-9]{2})/g); // Match each byte in the format \xXX
