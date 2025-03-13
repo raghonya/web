@@ -1,29 +1,39 @@
+//function convertToPythonByteArray(array1, array2) {
+//    // Merge both arrays into a 2D array, then flatten
+//    const flattenedArray = [...array1, ...array2];
+
+//    // Convert to Float32Array
+//    //const float32Array = new Float32Array(flattenedArray);
+
+//    // Create a byte array from the Float32Array
+//    const byteArray = new Uint8Array(flattenedArray.buffer);
+
+//    // Convert to a Python-compatible bytearray string
+//    const pythonByteArray = "b'" + Array.from(byteArray)
+//        .map(byte => `\\x${byte.toString(16).padStart(2, '0')}`)
+//        .join('') + "'";
+
+//    return pythonByteArray;
+//}
+
+// Helper function to escape bytes for Python compatibility
+function byteArrayToEscapedString(byteArray) {
+    return byteArray.reduce((acc, byte) => {
+        return acc + '\\x' + byte.toString(16).padStart(2, '0');
+    }, '');
+}
 function convertToPythonByteArray(array1, array2) {
-    const flattenedArray = [...array1, ...array2];
+    // Merge your arrays
+    const mergedArray = [...array1, ...array2];
 
-    // Create an Int16Array (16-bit signed integers)
-    const int16Array = new Int16Array(flattenedArray.length);
+    // Create a Float64Array directly from your data
+    const float64Array = new Float64Array(mergedArray);
 
-    // Convert float samples (-1.0 to 1.0) to Int16 range (-32768 to 32767)
-    for (let i = 0; i < flattenedArray.length; i++) {
-        const sample = Math.max(-1, Math.min(1, flattenedArray[i])); // Clamp the sample
-        intSample = sample < 0
-            ? sample * 32768   // Negative samples
-            : sample * 32767;  // Positive samples
-        floatSampleRounded = Math.round(intSample);
-        int16ArrayValue = Math.floor(intSample);
-        new DataView(byteArray.buffer).setInt16(i * 2, intSample, true);  // Little endian
-    }
+    // Convert Float64Array to a Uint8Array (byte representation)
+    const byteArray = new Uint8Array(float64Array.buffer);
 
-    const byteArray = new Uint8Array(new Int16Array(flattenedArray.map(sample => {
-        sample = Math.max(-1, Math.min(1, sample));  // Clamp to [-1, 1]
-        return sample < 0 ? sample * 32768 : sample * 32767;
-    })).buffer);
-
-    // Convert to Python bytearray literal string (for quick Python copy-paste):
-    const pythonByteArray = "b'" + Array.from(byteArray, byte =>
-        '\\x' + byte.toString(16).padStart(2, '0')
-    ).join('') + "'";
+    // Convert byte array to Python-compatible byte-string representation
+    const pythonByteArray = "b'" + Array.from(byteArrayToEscapedString(byteArray)).join('') + "'";
 
     return pythonByteArray;
 }
