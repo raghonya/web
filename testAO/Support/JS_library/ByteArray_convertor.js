@@ -1,65 +1,31 @@
-function twoFloat32ArraysToPythonByteLiteralLittleEndian(arr1, arr2) {
-    if (arr1.length !== arr2.length) {
-      throw new Error("Both arrays must have the same length.");
-    }
-    
-    const rows = arr1.length;
-    const cols = 2; // two columns
-    // Each float32 takes 4 bytes.
-    const buffer = new ArrayBuffer(rows * cols * 4);
-    const view = new DataView(buffer);
-    
-    // Write the floats into the buffer row by row.
-    // For each row, the first element is from arr1 and the second from arr2.
-    for (let i = 0; i < rows; i++) {
-      view.setFloat32((i * cols + 0) * 4, arr1[i], true); // little-endian
-      view.setFloat32((i * cols + 1) * 4, arr2[i], true); // little-endian
-    }
-    
-    // Create the Python-style byte literal.
-    const bytes = new Uint8Array(buffer);
-    let result = "b'";
-    for (let byte of bytes) {
-      // Append as a printable ASCII character if possible.
-      if (byte >= 32 && byte <= 126 && byte !== 92 && byte !== 39) {
-        result += String.fromCharCode(byte);
-      } else {
-        // Otherwise, use a hex escape sequence.
-        result += "\\x" + byte.toString(16).padStart(2, '0');
-      }
-    }
-    result += "'";
-    return result;
-  }  
-
 function convertToByteArray(array1, array2) {
     //if (arr1.length !== arr2.length) {
     //    throw new Error("Both arrays must have the same length.");
+    
     //  }// Merge both DBL arrays into a single array
     const rows = arr1.length;
-    const cols = 2; // two columns
-    // Each float32 takes 4 bytes.
-    const buffer = new ArrayBuffer(rows * cols * 4);
-    const view = new DataView(buffer);
-    
-    // Write the floats into the buffer row by row.
-    // For each row, the first element is from arr1 and the second from arr2.
+    // Create a Float32Array with two columns per row.
+    const floatArray = new Float32Array(rows * 2);
+
+    // Fill the Float32Array with arr1 values in the first column and arr2 values in the second.
     for (let i = 0; i < rows; i++) {
-      view.setFloat32((i * cols + 0) * 4, arr1[i], true); // little-endian
-      view.setFloat32((i * cols + 1) * 4, arr2[i], true); // little-endian
+        floatArray[2 * i] = arr1[i];
+        floatArray[2 * i + 1] = arr2[i];
     }
-    
-    // Create the Python-style byte literal.
-    const bytes = new Uint8Array(buffer);
+
+    // Convert the underlying ArrayBuffer into a Uint8Array to access individual bytes.
+    const bytes = new Uint8Array(floatArray.buffer);
+
+    // Build a Python-style byte literal.
     let pythonByteArray = "b'";
     for (let byte of bytes) {
-      // Append as a printable ASCII character if possible.
-      if (byte >= 32 && byte <= 126 && byte !== 92 && byte !== 39) {
+        // Append as a character if the byte is a printable ASCII character (excluding backslash and single quote)
+        if (byte >= 32 && byte <= 126 && byte !== 92 && byte !== 39) {
         pythonByteArray += String.fromCharCode(byte);
-      } else {
+        } else {
         // Otherwise, use a hex escape sequence.
         pythonByteArray += "\\x" + byte.toString(16).padStart(2, '0');
-      }
+        }
     }
     pythonByteArray += "'";
     return pythonByteArray;
