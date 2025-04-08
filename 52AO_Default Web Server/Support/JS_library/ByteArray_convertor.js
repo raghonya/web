@@ -1,44 +1,19 @@
-//function convertToPythonByteArray(array1, array2) {
-//    // Merge both arrays into a 2D array, then flatten
-//    const flattenedArray = [...array1, ...array2];
-
-//    // Convert to Float32Array
-//    //const float32Array = new Float32Array(flattenedArray);
-
-//    // Create a byte array from the Float32Array
-//    const byteArray = new Uint8Array(flattenedArray.buffer);
-
-//    // Convert to a Python-compatible bytearray string
-//    const pythonByteArray = "b'" + Array.from(byteArray)
-//        .map(byte => `\\x${byte.toString(16).padStart(2, '0')}`)
-//        .join('') + "'";
-
-//    return pythonByteArray;
-//}
-
-// Helper function to escape bytes for Python compatibility
-function byteArrayToEscapedString(byteArray) {
-    return byteArray.reduce((acc, byte) => {
-        return acc + '\\x' + byte.toString(16).padStart(2, '0');
-    }, '');
-}
-function convertToPythonByteArray(array1, array2) {
-    // Merge your arrays
+function convertToByteArray(array1, array2) {
+    // Merge both DBL arrays into a single array
     const mergedArray = [...array1, ...array2];
 
-    // Create a Float64Array directly from your data
-    const float64Array = new Float64Array(mergedArray);
+    // Convert merged array to Float32Array (as Python expects float32 format)
+    const float32Array = new Float32Array(mergedArray);
 
-    // Convert Float64Array to a Uint8Array (byte representation)
-    const byteArray = new Uint8Array(float64Array.buffer);
+    // Create an array of bytes from the Float32Array
+    const byteArray = new Uint8Array(float32Array.buffer);
 
-    // Convert byte array to Python-compatible byte-string representation
-    const pythonByteArray = "b'" + Array.from(byteArrayToEscapedString(byteArray)).join('') + "'";
-
+    // Convert the byte array to a Python-compatible bytearray string
+    const hexString = byteArray.toString('hex');
+    const byteString = hexString.match(/.{1,2}/g).map(byte => `\\x${byte}`).join('');
+    const pythonByteArray =`b'${byteString}'`;
     return pythonByteArray;
 }
-
-
 
 function reverseByteArrayToDoubles(byteArrayString) {
     let dblArray = [];

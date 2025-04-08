@@ -66,7 +66,7 @@ define (Application%3A%3ADigital%20Multimetergviweb%2Egviweb dv(.VirtualInstrume
         e(.JavaScriptStaticRefNum local46)
         ce(dv(.String 'Init')c47)
         ce(dv(.ErrorCluster (false 0 '' ))c48)
-        ce(dv(.String 'ws://10.0.100.52:7004/')c49)
+        ce(dv(.String 'ws://10.0.100.50:7004/')c49)
         ce(dv(c(
             ce(c(
                 e(.String Range)
