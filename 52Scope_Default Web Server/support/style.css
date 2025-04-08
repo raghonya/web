@@ -1,0 +1,63 @@
+/* 1) Style the entire data grid container */
+ni-data-grid {
+    /* Set up base styles: border, background, fonts, etc. */
+    display: block;
+    width: 100%;
+    border: 1px solid #ccc;
+    background-color: #fafafa;
+  
+    /* Change the text styling as you like: */
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    color: #333;
+    /* etc. */
+  }
+  
+  /* 2) (Optional) Style the header row or cells inside the data grid, 
+       if the component exposes named parts via ::part(...) selectors. 
+       For NI Web VIs, this may or may not work, depending on how 
+       the component is implemented or if it has an open Shadow DOM. */
+  /* ni-data-grid::part(header-cell) {
+    font-weight: bold;
+    background-color: #ddd;
+    padding: 0.5rem;
+    text-align: left;
+  } */
+  
+  /* 3) Style the body cells. */
+  /* ni-data-grid::part(cell) {
+    background-color: #fff;
+    border-bottom: 1px solid #ddd;
+    padding: 0.5rem;
+  } */
+  
+  /* 4) (Optional) If you want to style the columns themselves, 
+       you might consider using attribute selectors or a custom class.
+       For example, to style a particular column by its field-name: */
+  
+/* ni-data-grid-column {
+    resize: none !important;
+    width: auto !important; /* Ensures columns don’t try to resize
+    background-color: #0ac00a;
+  } */
+ni-data-grid-column::part(column-resize-handle) {
+    display: none;
+  }
+  /* ni-data-grid-column[field-name="Amplitude V"] {
+    background-color: #0ac00a;
+  }
+   */
+  /* Similarly for other columns:
+     ni-data-grid-column[field-name="Offset V"] {
+         ...
+     }
+  */
+  
+  /* 5) Style any nested ni-string-control if permitted */
+  ni-string-control {
+    /* For instance, change how text displays inside each cell */
+    color: #333;
+    font-weight: normal;
+    /* etc. */
+  }
+  
