@@ -44,11 +44,27 @@ function initializePongGame() {
                 leftPaddleY = canvas.height - paddleHeight;
         }
     };
+    const handleMouseDown = (event) => {
+        const canvasRect = canvas.getBoundingClientRect();
+        const mouseX = event.clientX - canvasRect.left;
+        const mouseY = event.clientY - canvasRect.top;
+        // Only respond if click is on the left side of the canvas
+        if (mouseX >= 0 && mouseX < canvas.width / 2) {
+            // Move paddle so its center aligns with the mouse Y
+            leftPaddleY = mouseY - paddleHeight / 2;
+            // Clamp within canvas
+            if (leftPaddleY < 0)
+                leftPaddleY = 0;
+            if (leftPaddleY > canvas.height - paddleHeight) {
+                leftPaddleY = canvas.height - paddleHeight;
+            }
+        }
+    };
     const setupGame = () => {
         resizeCanvas();
         initializeBall(initializeBallSide);
         initializePaddles();
-        handleScore();
+        // handleScore();
     };
     const resizeCanvas = () => {
         const isWideScreen = (window.innerWidth / window.innerHeight) > ASPECT_RATIO;
@@ -214,12 +230,11 @@ function initializePongGame() {
     document.addEventListener('keydown', handleKeyDown);
     document.addEventListener('keyup', handleKeyUp);
     // document.addEventListener('keydown', gameLoop, { once: true });
-    document.addEventListener("mousemove", handleMouseMove);
-    // document.addEventListener("mousedown", handleMouseDown);
+    // document.addEventListener("mousemove", handleMouseMove);
+    document.addEventListener("mousedown", handleMouseDown);
     setupGame();
     renderGame();
-    let timer = 0;
-    let sec = 5;
+    let sec = 2;
     const startTimer = (onComplete) => {
         const intervalId = setInterval(() => {
             sec -= 1;
@@ -229,7 +244,7 @@ function initializePongGame() {
             }
         }, 1000);
     };
-    // ⏳ Start the timer, then launch the game
+    // Start the timer, then launch the game
     startTimer(() => {
         gameLoop();
     });
