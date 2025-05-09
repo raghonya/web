@@ -230,8 +230,8 @@ function initializePongGame() {
     document.addEventListener('keydown', handleKeyDown);
     document.addEventListener('keyup', handleKeyUp);
     // document.addEventListener('keydown', gameLoop, { once: true });
-    // document.addEventListener("mousemove", handleMouseMove);
-    document.addEventListener("mousedown", handleMouseDown);
+    document.addEventListener("pointermove", handleMouseMove);
+    // document.addEventListener("mousedown", handleMouseDown);
     setupGame();
     renderGame();
     let sec = 2;
