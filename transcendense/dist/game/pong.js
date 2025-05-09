@@ -56,9 +56,8 @@ function initializePongGame() {
             // Clamp so the paddle doesn't go outside canvas
             if (leftPaddleY < 0)
                 leftPaddleY = 0;
-            if (leftPaddleY > canvas.height - paddleHeight) {
+            if (leftPaddleY > canvas.height - paddleHeight)
                 leftPaddleY = canvas.height - paddleHeight;
-            }
         }
     };
     const handleMouseDown = (event) => {
