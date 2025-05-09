@@ -5,7 +5,7 @@ function initializePongGame() {
         console.error('Canvas element not found');
         return;
     }
-    const ctx = canvas.getContext('2d'); // ! Es inchi hamar a
+    const ctx = canvas.getContext('2d');
     const ASPECT_RATIO = 16 / 9;
     let ballRadius;
     let paddleWidth;
@@ -25,6 +25,29 @@ function initializePongGame() {
         s: false,
         ArrowUp: false,
         ArrowDown: false
+    };
+    let oldClientX = 0;
+    let oldClientY = 0;
+    const handleMouseMove = (event) => {
+        const canvasRect = canvas.getBoundingClientRect();
+        const mouseX = event.clientX - canvasRect.left;
+        const mouseY = event.clientY - canvasRect.top;
+        const isInCanvas = (mouseX >= 0 && mouseX <= canvas.width &&
+            mouseY >= 0 && mouseY <= canvas.height);
+        if (isInCanvas && mouseX < canvas.width / 2) {
+            const paddleCenter = leftPaddleY + paddleHeight / 2;
+            if (mouseY < paddleCenter) {
+                leftPaddleY -= paddleSpeed;
+            }
+            else if (mouseY > paddleCenter) {
+                leftPaddleY += paddleSpeed;
+            }
+            if (leftPaddleY < 0)
+                leftPaddleY = 0;
+            if (leftPaddleY > canvas.height - paddleHeight) {
+                leftPaddleY = canvas.height - paddleHeight;
+            }
+        }
     };
     const setupGame = () => {
         resizeCanvas();
@@ -107,6 +130,7 @@ function initializePongGame() {
         }
     };
     const checkWallCollision = () => {
+        1000;
         if (ballY - ballRadius < 0 || ballY + ballRadius > canvas.height) {
             ballSpeedY = -ballSpeedY;
         }
@@ -195,6 +219,8 @@ function initializePongGame() {
     document.addEventListener('keydown', handleKeyDown);
     document.addEventListener('keyup', handleKeyUp);
     document.addEventListener('keydown', gameLoop, { once: true });
+    document.addEventListener("mousemove", handleMouseMove);
+    // document.addEventListener("mousedown", handleMouseDown);
     setupGame();
     renderGame();
     // let height: TextMetrics = ctx.measureText("Press any key to start");
