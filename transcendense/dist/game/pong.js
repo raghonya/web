@@ -26,22 +26,39 @@ function initializePongGame() {
         ArrowUp: false,
         ArrowDown: false
     };
-    const handleMouseMove = (event) => {
+    // const handleMouseMove = (event: MouseEvent) => {
+    // 	const canvasRect = canvas.getBoundingClientRect();
+    // 	const mouseX = event.clientX - canvasRect.left;
+    // 	const mouseY = event.clientY - canvasRect.top;
+    // 	const isInCanvas = (
+    // 		mouseX >= 0 && mouseX <= canvas.width &&
+    // 		mouseY >= 0 && mouseY <= canvas.height
+    // 	);
+    // 	if (isInCanvas && mouseX < canvas.width / 2) {
+    // 		const paddleCenter = leftPaddleY + paddleHeight / 2;
+    // 		if (mouseY < paddleCenter)
+    // 			leftPaddleY -= paddleSpeed;
+    // 		else if (mouseY > paddleCenter)
+    // 			leftPaddleY += paddleSpeed;
+    // 		if (leftPaddleY < 0)
+    // 			leftPaddleY = 0;
+    // 		if (leftPaddleY > canvas.height - paddleHeight)
+    // 			leftPaddleY = canvas.height - paddleHeight;
+    // 	}
+    // };
+    const handlePointerMove = (event) => {
         const canvasRect = canvas.getBoundingClientRect();
-        const mouseX = event.clientX - canvasRect.left;
-        const mouseY = event.clientY - canvasRect.top;
-        const isInCanvas = (mouseX >= 0 && mouseX <= canvas.width &&
-            mouseY >= 0 && mouseY <= canvas.height);
-        if (isInCanvas && mouseX < canvas.width / 2) {
-            const paddleCenter = leftPaddleY + paddleHeight / 2;
-            if (mouseY < paddleCenter)
-                leftPaddleY -= paddleSpeed;
-            else if (mouseY > paddleCenter)
-                leftPaddleY += paddleSpeed;
+        const pointerX = event.clientX - canvasRect.left;
+        const pointerY = event.clientY - canvasRect.top;
+        // Only teleport when pointer is in the left half of the canvas
+        if (pointerX >= 0 && pointerX <= canvas.width / 2) {
+            leftPaddleY = pointerY - paddleHeight / 2;
+            // Clamp so the paddle doesn't go outside canvas
             if (leftPaddleY < 0)
                 leftPaddleY = 0;
-            if (leftPaddleY > canvas.height - paddleHeight)
+            if (leftPaddleY > canvas.height - paddleHeight) {
                 leftPaddleY = canvas.height - paddleHeight;
+            }
         }
     };
     const handleMouseDown = (event) => {
@@ -79,7 +96,7 @@ function initializePongGame() {
         ballRadius = canvas.width * 0.01;
         paddleWidth = canvas.width * 0.015;
         paddleHeight = canvas.height * 0.15;
-        paddleSpeed = canvas.height * 0.005;
+        paddleSpeed = canvas.height * 0.01;
     };
     const initializeBall = (side) => {
         ballX = canvas.width / 2;
@@ -230,7 +247,7 @@ function initializePongGame() {
     document.addEventListener('keydown', handleKeyDown);
     document.addEventListener('keyup', handleKeyUp);
     // document.addEventListener('keydown', gameLoop, { once: true });
-    document.addEventListener("pointermove", handleMouseMove);
+    document.addEventListener("pointermove", handlePointerMove);
     // document.addEventListener("mousedown", handleMouseDown);
     setupGame();
     renderGame();
