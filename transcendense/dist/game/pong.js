@@ -26,8 +26,6 @@ function initializePongGame() {
         ArrowUp: false,
         ArrowDown: false
     };
-    let oldClientX = 0;
-    let oldClientY = 0;
     const handleMouseMove = (event) => {
         const canvasRect = canvas.getBoundingClientRect();
         const mouseX = event.clientX - canvasRect.left;
@@ -36,17 +34,14 @@ function initializePongGame() {
             mouseY >= 0 && mouseY <= canvas.height);
         if (isInCanvas && mouseX < canvas.width / 2) {
             const paddleCenter = leftPaddleY + paddleHeight / 2;
-            if (mouseY < paddleCenter) {
+            if (mouseY < paddleCenter)
                 leftPaddleY -= paddleSpeed;
-            }
-            else if (mouseY > paddleCenter) {
+            else if (mouseY > paddleCenter)
                 leftPaddleY += paddleSpeed;
-            }
             if (leftPaddleY < 0)
                 leftPaddleY = 0;
-            if (leftPaddleY > canvas.height - paddleHeight) {
+            if (leftPaddleY > canvas.height - paddleHeight)
                 leftPaddleY = canvas.height - paddleHeight;
-            }
         }
     };
     const setupGame = () => {
@@ -68,7 +63,7 @@ function initializePongGame() {
         ballRadius = canvas.width * 0.01;
         paddleWidth = canvas.width * 0.015;
         paddleHeight = canvas.height * 0.15;
-        paddleSpeed = canvas.height * 0.02;
+        paddleSpeed = canvas.height * 0.005;
     };
     const initializeBall = (side) => {
         ballX = canvas.width / 2;
