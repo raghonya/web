@@ -213,16 +213,26 @@ function initializePongGame() {
     };
     document.addEventListener('keydown', handleKeyDown);
     document.addEventListener('keyup', handleKeyUp);
-    document.addEventListener('keydown', gameLoop, { once: true });
+    // document.addEventListener('keydown', gameLoop, { once: true });
     document.addEventListener("mousemove", handleMouseMove);
     // document.addEventListener("mousedown", handleMouseDown);
     setupGame();
     renderGame();
-    // let height: TextMetrics = ctx.measureText("Press any key to start");
-    // console.log(height);
-    // height = ctx.measureText("Press any key to start");
-    // ctx.textAlign = "center";
-    // console.log(`window.innerHeight: ${window.innerHeight}, window.innerWidth: ${window.innerWidth}`);	
+    let timer = 0;
+    let sec = 5;
+    const startTimer = (onComplete) => {
+        const intervalId = setInterval(() => {
+            sec -= 1;
+            if (sec <= 0) {
+                clearInterval(intervalId);
+                onComplete();
+            }
+        }, 1000);
+    };
+    // ⏳ Start the timer, then launch the game
+    startTimer(() => {
+        gameLoop();
+    });
 }
 // function handleResize() {
 // 	setupCanvas();
