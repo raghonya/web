@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>UI Launcher (Sidebar on Left, HTTP)</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      width: 100%;
+      background: #ffffff;
+      font-family: Arial, sans-serif;
+      overflow: hidden;
+    }
+    body {
+      display: flex;
+      flex-direction: row; /* Sidebar on left, content on right */
+    }
+
+    /* Sidebar (navbar) */
+    #navbar {
+      display: flex;
+      flex-direction: column;
+      background: #ffffff;
+      padding: 16px 8px;
+      gap: 8px;
+      box-shadow: 2px 0 4px rgba(0,0,0,0.1);
+      width: 200px;
+      flex-shrink: 0;
+      overflow-y: auto;
+    }
+    .nav-button {
+      background: #f57c00;       /* orange */
+      color: #ffffff;            /* white text */
+      border: none;
+      padding: 10px 12px;
+      cursor: pointer;
+      border-radius: 4px;
+      font-size: 14px;
+      text-align: left;
+      user-select: none;
+      transition: background-color 0.2s;
+    }
+    .nav-button:hover {
+      background: #ef6c00;       /* darker on hover */
+    }
+    .nav-button.active {
+      background: #e65100;       /* active state darker */
+    }
+
+    /* Main content area */
+    #content-container {
+      flex: 1;
+      position: relative;
+      background: #ffffff;
+      overflow: hidden;
+    }
+    #content {
+      display: flex;
+      flex-wrap: wrap;
+      align-content: flex-start;
+      gap: 4px;
+      padding: 4px;
+      height: 100%;
+      overflow: auto;
+      box-sizing: border-box;
+    }
+
+    /* Each pane wrapper */
+    .pane {
+      position: relative;
+      background: #ffffff;
+      border-radius: 4px;
+      overflow: hidden;
+      flex: 1 1 calc(50% - 8px);
+      height: 50vh;
+      min-width: 300px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+    .pane iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      background: #ffffff;
+    }
+    .pane .label {
+      position: absolute;
+      top: 6px;
+      left: 8px;
+      background: #f57c00;       /* orange */
+      color: #ffffff;            /* white text */
+      padding: 2px 6px;
+      font-size: 12px;
+      border-radius: 3px;
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    /* Placeholder when no UI is open */
+    #placeholder {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: #bbbbbb;
+      font-size: 18px;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sidebar with six buttons -->
+  <div id="navbar">
+    <button class="nav-button" data-label="AWG" data-src="http://ngrigory.github.io/web/AO_Default%20Web%20Server/AWG.html">AWG</button>
+    <button class="nav-button" data-label="Scope" data-src="http://ngrigory.github.io/web/Scope_Default%20Web%20Server/Scope.html">Scope</button>
+    <button class="nav-button" data-label="DIO" data-src="http://ngrigory.github.io/web/DIO_Default%20Web%20Server/DIO.html">DIO</button>
+    <button class="nav-button" data-label="DMM" data-src="http://ngrigory.github.io/web/DMM_Default%20Web%20Server/Digital%20Multimetergviweb.html">DMM</button>
+    <button class="nav-button" data-label="DSA" data-src="http://ngrigory.github.io/web/Dynamic%20Singal%20Analyser_Default%20Web%20Server/Dynamic%20Singal%20Analyser.html">DSA</button>
+    <button class="nav-button" data-label="C Editor" data-src="C:\Users\PC_15\Desktop\webapp\terminal.html">C Terminal</button>
+  </div>
+
+  <!-- Content container on the right -->
+  <div id="content-container">
+    <div id="content">
+      <div id="placeholder">Click a button on the left to open a UI</div>
+    </div>
+  </div>
+
+  <script>
+    const buttons     = document.querySelectorAll('.nav-button');
+    const content     = document.getElementById('content');
+    const placeholder = document.getElementById('placeholder');
+    const paneMap     = new Map();   // Map<label, paneElement>
+
+    // Locate “Scope” and “DSA” buttons for mutual exclusion
+    const scopeBtn = Array.from(buttons).find(b => b.getAttribute('data-label') === 'Scope');
+    const dsaBtn   = Array.from(buttons).find(b => b.getAttribute('data-label') === 'DSA');
+
+    function updateContent() {
+      // If no panes visible, show placeholder
+      if (paneMap.size === 0) {
+        placeholder.style.display = 'block';
+      } else {
+        placeholder.style.display = 'none';
+      }
+    }
+
+    buttons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const label  = btn.getAttribute('data-label');
+        const src    = btn.getAttribute('data-src');
+        const isOpen = paneMap.has(label);
+
+        // Prevent opening DSA if Scope is already open
+        if (!isOpen && btn === dsaBtn && paneMap.has('Scope')) {
+          alert('⚠️ Cannot open DSA while Scope is active.');
+          return;
+        }
+        // Prevent opening Scope if DSA is already open
+        if (!isOpen && btn === scopeBtn && paneMap.has('DSA')) {
+          alert('⚠️ Cannot open Scope while DSA is active.');
+          return;
+        }
+
+        if (isOpen) {
+          // Second (even) click → remove the pane entirely
+          const paneEl = paneMap.get(label);
+          paneEl.remove();            // remove from DOM
+          paneMap.delete(label);      // remove from map
+          btn.classList.remove('active');
+        } else {
+          // First (or odd) click → create and append a new pane
+          const wrapper = document.createElement('div');
+          wrapper.classList.add('pane');
+          wrapper.id = `pane-${label.toLowerCase().replace(/\s/g, '-')}`;
+
+          // Label overlay
+          const lbl = document.createElement('div');
+          lbl.classList.add('label');
+          lbl.textContent = label;
+          wrapper.appendChild(lbl);
+
+          // Iframe
+          const ifr = document.createElement('iframe');
+          ifr.src = src;
+          wrapper.appendChild(ifr);
+
+          content.appendChild(wrapper);
+          paneMap.set(label, wrapper);
+          btn.classList.add('active');
+        }
+
+        updateContent();
+      });
+    });
+
+    // Initial placeholder state
+    updateContent();
+  </script>
+</body>
+</html>

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>C-Code Terminal</title>
+
+  <!-- ============================
+       1) CodeMirror Dependencies
+       ============================ -->
+  <!-- CodeMirror core CSS -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css"
+  />
+
+  <!-- CodeMirror “theme” (Monokai) -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/theme/monokai.min.css"
+  />
+
+  <!-- CodeMirror hint (autocomplete) CSS -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/hint/show-hint.min.css"
+  />
+
+  <!-- =============================
+       2) Custom Styles for Terminal
+       ============================= -->
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: sans-serif;
+      background: #2d2d2d;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      box-sizing: border-box;
+    }
+
+    /* Top bar with connection status + Send button */
+    #top-bar {
+      background: #1e1e1e;
+      padding: 8px;
+      display: flex;
+      align-items: center;
+      border-bottom: 1px solid #444;
+    }
+    #status-indicator {
+      display: flex;
+      align-items: center;
+      font-size: 14px;
+      margin-right: 16px;
+    }
+    #status-dot {
+      height: 10px;
+      width: 10px;
+      border-radius: 50%;
+      background: gray;
+      margin-right: 6px;
+    }
+    #status-text {
+      color: #fff;
+    }
+    #send-button {
+      margin-left: auto;
+      background: #007acc;
+      border: none;
+      color: #fff;
+      padding: 6px 12px;
+      font-size: 14px;
+      border-radius: 3px;
+      cursor: pointer;
+    }
+    #send-button:disabled {
+      background: #555;
+      cursor: not-allowed;
+    }
+
+    /* Editor section */
+    #editor-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      border-bottom: 1px solid #444;
+    }
+    .CodeMirror {
+      height: 100%;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    /* Terminal output */
+    #terminal-container {
+      height: 30%;
+      background: #1e1e1e;
+      padding: 8px;
+      overflow-y: auto;
+      font-family: monospace;
+      font-size: 13px;
+    }
+    .terminal-line {
+      margin: 0;
+      padding: 0;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    /* Scrollbar styling (optional) */
+    #terminal-container::-webkit-scrollbar {
+      width: 8px;
+    }
+    #terminal-container::-webkit-scrollbar-thumb {
+      background: #555;
+      border-radius: 4px;
+    }
+    #terminal-container::-webkit-scrollbar-track {
+      background: #2d2d2d;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- ============ Top Bar ============ -->
+  <div id="top-bar">
+    <div id="status-indicator">
+      <span id="status-dot"></span>
+      <span id="status-text">Connecting…</span>
+    </div>
+    <button id="send-button" disabled>Send C Code</button>
+  </div>
+
+  <!-- ============================= Editor (CodeMirror) Section ============================= -->
+  <div id="editor-container">
+    <textarea id="c-editor"></textarea>
+  </div>
+
+  <!-- ============================= Terminal Output Section ============================= -->
+  <div id="terminal-container"></div>
+
+  <!-- ============================
+       3) CodeMirror Scripts
+       Must load before terminal.js
+       ============================ -->
+  <!-- CodeMirror core JS -->
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.js"
+  ></script>
+
+  <!-- CodeMirror C/C++ mode -->
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/clike/clike.min.js"
+  ></script>
+
+  <!-- CodeMirror autocomplete addon -->
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/hint/show-hint.min.js"
+  ></script>
+
+  <!-- =============================
+       4) Our Custom JS (terminal.js)
+       ============================= -->
+  <script src="terminal.js"></script>
+</body>
+</html>
